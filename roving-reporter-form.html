@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Roving Reporter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .question-section {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .question {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .question:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+        
+        .form-section {
+            padding: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            animation: slideIn 0.6s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #495057;
+            font-size: 14px;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .save-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        .save-btn:active {
+            transform: translateY(0);
+        }
+        
+        .clear-btn {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 2px solid #e9ecef;
+        }
+        
+        .clear-btn:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .responses-section {
+            padding: 20px;
+            background: #f8f9fa;
+            margin-top: 20px;
+        }
+        
+        .responses-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .responses-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .response-count {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .response-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .response-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .response-name {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .response-answer {
+            color: #495057;
+            line-height: 1.5;
+        }
+        
+        .response-question {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        .no-responses {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .export-btn {
+            width: 100%;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .export-btn:hover {
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #333;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎤 Roving Reporter</h1>
+            <p>Interview participants and collect their responses!</p>
+        </div>
+        
+        <div class="question-section">
+            <div class="question" id="currentQuestion">Loading question...</div>
+            <button class="refresh-btn" onclick="getNewQuestion()">🔄 Get New Question</button>
+        </div>
+        
+        <div class="form-section">
+            <form id="reporterForm">
+                <div class="input-group">
+                    <label for="name">Participant's Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter their name..." required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="answer">Their Answer</label>
+                    <textarea id="answer" name="answer" placeholder="Type their response here..." required></textarea>
+                </div>
+                
+                <div class="btn-group">
+                    <button type="button" class="btn clear-btn" onclick="clearForm()">Clear</button>
+                    <button type="submit" class="btn save-btn">Save Response</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="responses-section">
+            <div class="responses-header">
+                <div class="responses-title">Collected Responses</div>
+                <div class="response-count" id="responseCount">0</div>
+            </div>
+            <div id="responsesList"></div>
+            <button class="btn save-btn export-btn" onclick="exportResponses()">📥 Export All Responses</button>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+    
+    <script>
+        const questions = [
+            "What is the most unusual thing you've ever eaten?",
+            "What's the top thing on your bucket list?",
+            "What do you do every day that I might not expect?",
+            "Who would you like to dress like for a costume party, if you had a costume designer at your disposal?",
+            "What is the most recent dream that you can remember?",
+            "If you could trade places with one person for a day, who would you choose?",
+            "What is something you're glad you did?",
+            "If you were a superhero, what would your power be?",
+            "What was your favorite childhood game?",
+            "When you were a child, what did you want to be when you grew up?",
+            "What is one embarrassing thing you hide when guests are coming over?",
+            "What is one thing that you think is over-rated?",
+            "Who are you a secret groupie for?",
+            "What's the best advice you've been given?",
+            "You've got 10 minutes to flee. After photos, important papers, & survival stuff, what would you take?",
+            "What's the bravest thing you've ever done?",
+            "Imagine you found yourself in jail. Who would you call to bail you out?",
+            "What is one thing you miss about being a child?",
+            "What compliment do people give you the most?",
+            "What is the most bizarre encounter you have had in life?",
+            "What is your remedy for a tough day?",
+            "In a dream world, who would you like to write/act/sing/dance/play like?",
+            "What was your best vacation?",
+            "What one event from your childhood had the most impact on you?",
+            "What is the most interesting form of transportation you've ever taken?",
+            "Where is the best place you have lived and why?",
+            "What is the best thing you've ever eaten?"
+        ];
+        
+        let currentQuestion = "";
+        let responses = [];
+        
+        // Load saved responses from localStorage
+        function loadResponses() {
+            const saved = localStorage.getItem('rovingReporterResponses');
+            if (saved) {
+                responses = JSON.parse(saved);
+                updateResponsesList();
+            }
+        }
+        
+        // Save responses to localStorage
+        function saveToStorage() {
+            localStorage.setItem('rovingReporterResponses', JSON.stringify(responses));
+        }
+        
+        // Get a random question
+        function getNewQuestion() {
+            const randomIndex = Math.floor(Math.random() * questions.length);
+            currentQuestion = questions[randomIndex];
+            document.getElementById('currentQuestion').textContent = currentQuestion;
+            
+            // Add a little animation
+            const questionEl = document.getElementById('currentQuestion');
+            questionEl.style.animation = 'none';
+            setTimeout(() => {
+                questionEl.style.animation = 'fadeIn 0.5s ease-out';
+            }, 10);
+        }
+        
+        // Clear the form
+        function clearForm() {
+            document.getElementById('name').value = '';
+            document.getElementById('answer').value = '';
+        }
+        
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Handle form submission
+        document.getElementById('reporterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value.trim();
+            const answer = document.getElementById('answer').value.trim();
+            
+            if (name && answer) {
+                const response = {
+                    name: name,
+                    answer: answer,
+                    question: currentQuestion,
+                    timestamp: new Date().toISOString()
+                };
+                
+                responses.unshift(response);
+                saveToStorage();
+                updateResponsesList();
+                clearForm();
+                getNewQuestion();
+                showToast('Response saved! Getting new question...');
+            }
+        });
+        
+        // Update the responses list display
+        function updateResponsesList() {
+            const listEl = document.getElementById('responsesList');
+            const countEl = document.getElementById('responseCount');
+            
+            countEl.textContent = responses.length;
+            
+            if (responses.length === 0) {
+                listEl.innerHTML = '<div class="no-responses">No responses collected yet. Start interviewing!</div>';
+            } else {
+                listEl.innerHTML = responses.map(r => `
+                    <div class="response-item">
+                        <div class="response-name">${r.name}</div>
+                        <div class="response-answer">${r.answer}</div>
+                        <div class="response-question">Question: ${r.question}</div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        // Export responses
+        function exportResponses() {
+            if (responses.length === 0) {
+                showToast('No responses to export!');
+                return;
+            }
+            
+            let exportText = 'ROVING REPORTER RESPONSES\n';
+            exportText += '=========================\n\n';
+            
+            responses.forEach((r, index) => {
+                exportText += `Response #${index + 1}\n`;
+                exportText += `Name: ${r.name}\n`;
+                exportText += `Question: ${r.question}\n`;
+                exportText += `Answer: ${r.answer}\n`;
+                exportText += `Time: ${new Date(r.timestamp).toLocaleString()}\n`;
+                exportText += '\n---\n\n';
+            });
+            
+            const blob = new Blob([exportText], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `roving-reporter-responses-${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            
+            showToast('Responses exported!');
+        }
+        
+        // Initialize
+        loadResponses();
+        getNewQuestion();
+    </script>
+</body>
+</html>
